@@ -1,5 +1,11 @@
 package com.example.demo.funcional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,124 +19,57 @@ public class MainInterfacesFuncionales {
 		// TODO Auto-generated method stub
 
 //		SUPPLIER
-//      Clase
-		
-		// 1) SUPPLIER
-		LOG.info("1. SUPPLIER");
-		
-		IPersonaSupplier<String> supplier1 = new PersonaSuppierImpl();
-		LOG.info("Supplier clase:" + supplier1.getNombre());
-	
-//		Lambdas
-		
-		IPersonaSupplier<String> supplier2 = () ->"Francisco2";
-		LOG.info("Supplier lambda:" + supplier2.getNombre());
 
-		IPersonaSupplier<Integer> supplier3 = () -> new Integer(5);
-		LOG.info("Supplier lambda:" + supplier3.getNombre());
-	
-		IPersonaSupplier<Persona> supplier4 = () -> {
-			Persona per = new Persona();
-			per.setApellido("Chanataxi");
-			per.setNombre("Francisco");
-			
-			return per;
-		} ;
-		LOG.info("Supplier lambda:" + supplier4.getNombre());
-	
+		//----JAVA-----
+		// crea las implementaciones mediantes lambdas
 		
-		//IPersonaSupplier<Persona> supplier5 = () -> new PersonaSupplier2Impl();
-		//LOG.info("Supplier lambda:" + supplier5.getNombre());
-	
+		// cuando un metodo recibe como argumento de entrada una interfase funcional ese metodo 
+		
+		// adquiere un nombre que se los conoce como Metodo hideOrder
+		
+		LOG.info("JAVA SUPPLIER");
+		
+		Stream<String>lista= Stream.generate( () ->"Francisco2").limit(10);
+		lista.forEach(cadena -> LOG.info(cadena));
+		
+		
 		// 2) CONSUMER
-		LOG.info("2) CONSUMER");
-		
-//		CLASE
-		IPersonaConsumer<String> consumer1 = new PersonaConsumerImpl();
-		
-		consumer1.accept("Procesa este dato");
-		
-		
-//		LAMBDA
-		
-		IPersonaConsumer<String> consumer2 = cadena -> LOG.info("__MENSAJE__:" + cadena);
-		consumer2.accept("procesa este dato 2");
-	
-		
-		IPersonaConsumer<String> consumer3 = cadena ->{
-			LOG.info("__MENSAJE__a:" + cadena);
-			LOG.info("__MENSAJE__b:" + cadena);
 
-		};
-		consumer3.accept("procesa este dato 3");
-	
-		IPersonaConsumer2<Integer, Integer> consumer4 = (valor1 , valor2)->{
-			Integer valor3 = valor1.intValue()+valor2.intValue();
-			LOG.info("valor3 = " + valor3);
-		};
+		//----JAVA-----
+		LOG.info("2) Java CONSUMER");
 		
-		consumer4.accept(Integer.valueOf(5), Integer.valueOf(10));
-	
-		// 2) PREDICATE
+		List<Integer> listaNumeros = Arrays.asList(1,2,3,4,323,21,222,311,24);
+		listaNumeros.forEach(numero -> LOG.info("valor : " + numero));
+		
+		
+		//manera tradicional
+		
+		for (Integer integer : listaNumeros) {
+			LOG.info("valor: " + integer);
+		}
+		
+		// 3) PREDICATE
 		LOG.info("3) PREDICATE");
+		// ---Java---
+		LOG.info("JAVA PREDICATE");
 		
-//		LAMBDAS
+		// a partir de la listaNumeros de arriba 
 		
-		IPersonaPredicate<String> predicate1 = cadena -> cadena.contains("Z");
+		Stream<Integer>listaFiltrada= listaNumeros.stream().filter(numero -> numero>=3);
+		listaFiltrada.forEach(numero -> LOG.info("Valor: " + numero));
 		
-		LOG.info("Predicate1 : " + predicate1.evaluar("Francisco"));
+         // 4) FUNCTION
+		LOG.info("JAVA FUNCTION");
+		Stream<String>listaCambiada = listaNumeros.stream().map(numeroLista -> {
+		Integer valorFinal = numeroLista+1;
+		String cadena = "num : " + valorFinal.toString();
+		return cadena;
+		});
 		
-	
-		IPersonaPredicate<Integer> predicate2= numero -> {
-			
-			if (numero.intValue() > 10) {
-				return true;
-			}else return false;
-			
-			
-		};
-
-		LOG.info("Predicate2 : " + predicate2.evaluar(Integer.valueOf(11)));
-
-		// 4) FUNCTION
-				LOG.info("4) FUNCTION");
+		listaCambiada.forEach(cadena -> LOG.info(cadena));
 		
-				IPersonaFunction<String, Integer>function1 = numero -> "Francisco";
-				LOG.info(function1.aplicar(10));
-				
-				
-				IPersonaFunction<String, Integer>function2 = numero -> "Valor: " + numero.toString();
-				LOG.info(function2.aplicar(10));
-				
-				IPersonaFunction<Ciudadano, Persona>function3 = per ->{
-					Ciudadano ciu = new Ciudadano();
-					ciu.setNombreCompleto(per.getNombre()+" "+per.getApellido());
-					ciu.setCiudad("Quito");
-					
-					return ciu ;
-				};
-				
-				Persona p = new Persona();
-				p.setApellido("Mancheno");
-				p.setNombre("Jose");
-				Ciudadano ciudadanoConvertido = function3.aplicar(p);
-				
-				LOG.info("Ciudadano Convertido : " + ciudadanoConvertido);
-	
 				// 4) UNARYOPERATOR
-				LOG.info("5) UNARYOPERATOR");
-				
-				IPersonaUnaryOperator<String>unaryOperator = cadena -> {
-					
-					String cadenaFinal = cadena.concat("-sufijo");
-					
-					return cadenaFinal;
-					
-				};
-				
-				LOG.info(unaryOperator.aplicar("Fran"));
-		
-	
+
 	}
 
 }
